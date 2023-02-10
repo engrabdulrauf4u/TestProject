@@ -6,7 +6,7 @@ services:
     container_name: HelloworldSeviceContainer
     hostname: helloworld-service
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
     ports:
       - "9090:9090"
