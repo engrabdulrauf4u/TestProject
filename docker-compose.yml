@@ -2,9 +2,8 @@ version: "3.9"
 
 services:
   helloworld-service:
-    image: helloworldsevice
+    image: registrysevice
     container_name: HelloworldSeviceContainer
-    hostname: helloworld-service
     build:
       context: .
       dockerfile: Dockerfile
