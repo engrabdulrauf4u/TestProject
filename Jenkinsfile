@@ -2,25 +2,32 @@ pipeline {
     agent any
 
     stages {
-        stage('build') {
+        stage('Clone Code') {
             steps {
-                echo 'building project'
+                git 'https://github.com/engrabdulrauf4u/TestProject.git'
             }
         }
-         stage('test') {
+         stage('clean code') {
             steps {
-                echo 'Testing project'
+               bat 'mvn -B -DskipTests clean'
             }
         }
-        stage('deploy') {
+        stage('Compile Code') {
             steps {
-                echo 'deploy project'
+               bat 'mvn -B -DskipTests compile'
             }
         }
-    }
-    post{
-        always{
-            emailext body: 'Test email', subject: 'Test Email', to: 'engrabdulrauf4u@gmail.com'
+        stage('Install Code') {
+            steps {
+               bat 'mvn -B -DskipTests install'
+            }
+        }
+
+        stage('Deploy Code') {
+            steps {
+
+           bat 'docker-compose -f docker-compose.yml up -d'
+            }
         }
     }
 }
