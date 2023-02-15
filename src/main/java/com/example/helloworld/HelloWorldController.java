@@ -10,6 +10,6 @@ public class HelloWorldController {
 
     @RequestMapping("/hello")
     public String hello(){
-        return "Hello World ....Feb 10 11:50 AM";
+        return "Hello World ....WEd 15 15:57 AM";
     }
 }
