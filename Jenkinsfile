@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone Code') {
+       /*  stage('Clone Code') {
             steps {
                 git 'https://github.com/engrabdulrauf4u/TestProject.git'
             }
-        }
+        } */
          stage('clean code') {
             steps {
                bat 'mvn -B -DskipTests clean'
