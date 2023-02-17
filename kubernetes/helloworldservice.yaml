@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworldservice
+  labels:
+    app: helloworldservice
+spec:
+  type: NodePort
+  selector:
+    app: helloworldservice
+  ports:
+    - protocol: TCP
+      port: 9090
+      name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworldservice
+spec:
+  selector:
+    matchLabels:
+      app: helloworldservice
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: helloworldservice
+    spec:
+      containers:
+        - name: helloworldservice
+          image: engrabdulrauf4u/helloworldservice:latest
+          ports:
+            - containerPort: 9090
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 9090
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
