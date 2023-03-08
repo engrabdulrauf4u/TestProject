@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+
+  name: helloworld
+
+spec:
+
+  selector:
+
+    matchLabels:
+
+      app: helloworld
+
+  replicas: 1
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: helloworld
+
+    spec:
+
+      containers:
+
+        - name: helloworld
+
+          image: engrabdulrauf4u/helloworldservice
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: helloworld
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: hello-worldappppppp.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: helloworld
+                port:
+                  number: 9090

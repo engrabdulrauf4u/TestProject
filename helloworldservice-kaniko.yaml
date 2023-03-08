@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld
+  labels:
+    app: helloworld
+spec:
+  type: NodePort
+  selector:
+    app: helloworld
+  ports:
+    - protocol: TCP
+      port: 9090
+      name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld # name of micro-service
+spec:
+  selector:
+    matchLabels:
+      app: helloworld
+  replicas: 1         # how many pods you run
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      containers:
+        - name: kaniko
+          image: gcr.io/kaniko-project/executor:debug
+          args: ["--dockerfile=Dockerfile",
+                 "--context=git://github.com/engrabdulrauf4u/TestProject.git#refs/heads/master", #git://github.com/kunchalavikram1427/connected-app.git#refs/heads/master
+                 "--destination=engrabdulrauf4u/hellowroldservice:latest"]
+          volumeMounts:
+            - name: kaniko-secret
+              mountPath: /kaniko/.docker
+            - name: dockerfile-storage
+              mountPath: /workspace
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9091
+      volumes:
+        - name: kaniko-secret
+          secret:
+            secretName: dockercred
+            items:
+              - key: .dockerconfigjson
+                path: config.json
+        - name: dockerfile-storage
+          persistentVolumeClaim:
+            claimName: dockerfile-claim
+
+        #   initContainers:
+      #  - name: gateway-service
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: dockerfile
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  hostPath:
+    path: /home/docker/kaniko # replace with local directory, such as "/home/<user-name>/kaniko"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dockerfile-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+  storageClassName: local-storage
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-storage
+provisioner: rancher.io/local-path
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete
