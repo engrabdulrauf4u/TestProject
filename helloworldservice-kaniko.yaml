@@ -27,12 +27,16 @@ spec:
       labels:
         app: helloworld
     spec:
+      restartPolicy: Always
       containers:
         - name: kaniko
           image: gcr.io/kaniko-project/executor:debug
-          args: ["--dockerfile=Dockerfile",
-                 "--context=git://github.com/engrabdulrauf4u/TestProject.git#refs/heads/master", #git://github.com/kunchalavikram1427/connected-app.git#refs/heads/master
-                 "--destination=engrabdulrauf4u/hellowroldservice:latest"]
+          args: [ "--dockerfile=/workspace/Dockerfile",
+                  "--context=dir://workspace",
+                  "--no-push" ]
+          #args: ["--dockerfile=Dockerfile",
+          #       "--context=git://github.com/engrabdulrauf4u/TestProject.git#refs/heads/master", #git://github.com/kunchalavikram1427/connected-app.git#refs/heads/master
+          #       "--destination=engrabdulrauf4u/hellowroldservice:latest"]
           volumeMounts:
             - name: kaniko-secret
               mountPath: /kaniko/.docker
