@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: helloworld
-          image: helloworld
-          imagePullPolicy: Never
+          image: engrabdulrauf4u/helloworld:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 9090
